@@ -88,27 +88,34 @@ public class Loop {
     	//get values
     	boolean[] keys = window.getKeys();
     	//iterate through values
+    	
+    	Vector3f velocity = new Vector3f(0,0,0);
+		//division by fps necessary for proper riemann sum
+		float speed = 1.0f /fps;
+		//angle from y axis to determine which direction the camera is moving in
+		float angle = window.getCamera().getRotation().y;
+		float sin = (float) Math.sin(angle);
+		float cos = (float) Math.cos(angle);
     	for(int i = 0; i< keys.length; i++) {
     		boolean value = keys[i];
     		//switch
-    		Vector3f velocity = new Vector3f(0,0,0);
-    		float speed = 1.0f /fps;
+    		
     		switch(i) {
     		case 0:
     			//w
-    			if(value) velocity.add(new Vector3f(0, 0, -speed));
+    			if(value) velocity.add(new Vector3f(-speed * sin, 0, -speed * cos));
     			break;
     		case 1:
     			//a
-    			if(value) velocity.add(new Vector3f(-speed, 0, 0));
+    			if(value) velocity.add(new Vector3f(-speed * cos, 0, speed * sin));
     			break;
     		case 2:
     			//s
-    			if(value) velocity.add(new Vector3f(0, 0, speed));
+    			if(value) velocity.add(new Vector3f(speed * sin, 0, speed * cos));
     			break;
     		case 3:
     			//d
-    			if(value)  velocity.add(new Vector3f(speed, 0, 0));
+    			if(value)  velocity.add(new Vector3f(speed * cos, 0, -speed * sin));
     			break;
     		case 4:
     			//space
@@ -120,9 +127,9 @@ public class Loop {
     			break;
     		default:
     			break;
-    		}
-    		window.getCamera().addVelocity(velocity);
+    		}	
     	}
+    	window.getCamera().addVelocity(velocity);
     }
 
     //here we render the meshes that are in the world

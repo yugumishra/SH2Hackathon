@@ -33,7 +33,7 @@ public class Window {
         this.width = width;
         this.height = height;
         this.vSync = vSync;
-        cam = new Camera();
+        cam = new Camera(width, height);
         keys = new boolean[6];
     }
 
@@ -73,6 +73,13 @@ public class Window {
             System.err.println("Failed to create GLFW window");
             System.exit(0);
         }
+        
+        //create framebuffer resize callback to send the new width and height to the camera
+        GLFW.glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+        	this.width = width;
+        	this.height = height;
+        	cam.updateDimensions(width, height);
+        });
 
         //create key callback to determine when keys are pressed
         //key callback now edits the keys array depending on the action
@@ -105,6 +112,17 @@ public class Window {
             }
         });
         
+        //set the input mode for the mouse (disabled)
+        GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+        //set to middle just in case not in middle already
+        GLFW.glfwSetCursorPos(window, width/2, height/2);
+        //set callback for the cursor position moving
+        //we'll use this to augment the rotation of the camera
+        GLFW.glfwSetCursorPosCallback(window, (window, x, y) -> {
+        	cam.processMouseMoved((int) x, (int) y);
+        	//set the cursor position back into the middle to prevent too much transformation
+        	GLFW.glfwSetCursorPos(window, width/2, height/2);
+        });
        
 
         //maximize the window (even though we set the hint)
