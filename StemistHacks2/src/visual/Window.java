@@ -16,13 +16,17 @@ public class Window {
     public String title;
     //window id
     public long window;
+    
+    //vsync variable
+    private boolean vSync;
 
     //constructor
-    public Window(String title, int width, int height) {
+    public Window(String title, int width, int height, boolean vSync) {
         //set values
         this.title = title;
         this.width = width;
         this.height = height;
+        this.vSync = vSync;
     }
 
     //init method
@@ -43,7 +47,7 @@ public class Window {
         GLFW.glfwDefaultWindowHints();
         //visible resizeable false (for now)
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL11.GL_FALSE);
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_FALSE);
+        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GL11.GL_TRUE);
         //opengl version
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -69,11 +73,18 @@ public class Window {
                 GLFW.glfwSetWindowShouldClose(window, true);
             }
         });
+        
+       
 
         //maximize the window (even though we set the hint)
         GLFW.glfwMaximizeWindow(window);
         //make the context 
         GLFW.glfwMakeContextCurrent(window);
+        
+        //check for vysnc
+        if(vSync) {
+			GLFW.glfwSwapInterval(1);
+		}
 
         //time to show
         GLFW.glfwShowWindow(window);
