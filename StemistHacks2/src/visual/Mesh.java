@@ -58,7 +58,6 @@ public class Mesh {
         //set the vertex count (necessary for draw call)
         vertexCount = vertices.length/3;
         loaded = true;
-        System.out.println(vao + ": " + vbo);
     }
 
     //get whether this mesh is loaded or not

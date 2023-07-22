@@ -1,23 +1,29 @@
 package visual;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class Loop {
+	//references to important game objects
     private Window window;
     private World world;
     private Renderer renderer;
 
+    //internal statistics
     private int frame;
     private long time;
     private float fps;
     
+    //isrunning variable
     private boolean isRunning;
 
     public Loop() {
+    	//get from startup
         window = Startup.getWindow();
         world = Startup.getWorld();
         renderer = Startup.getRenderer();
-
+        
+        //intialize to right now
         time = System.currentTimeMillis();
         frame = 0;
         //as a default
@@ -48,7 +54,9 @@ public class Loop {
             update();
             input();
             render();
+            //update window (inputs)
             window.update();
+            //check for closing
             if(window.closed()) {
             	stop();
             }
@@ -73,11 +81,48 @@ public class Loop {
     }
 
     public void update() {
-        
+        window.getCamera().update();
     }
-
+    //process inputs
     public void input() {
-    	
+    	//get values
+    	boolean[] keys = window.getKeys();
+    	//iterate through values
+    	for(int i = 0; i< keys.length; i++) {
+    		boolean value = keys[i];
+    		//switch
+    		Vector3f velocity = new Vector3f(0,0,0);
+    		float speed = 1.0f /fps;
+    		switch(i) {
+    		case 0:
+    			//w
+    			if(value) velocity.add(new Vector3f(0, 0, -speed));
+    			break;
+    		case 1:
+    			//a
+    			if(value) velocity.add(new Vector3f(-speed, 0, 0));
+    			break;
+    		case 2:
+    			//s
+    			if(value) velocity.add(new Vector3f(0, 0, speed));
+    			break;
+    		case 3:
+    			//d
+    			if(value)  velocity.add(new Vector3f(speed, 0, 0));
+    			break;
+    		case 4:
+    			//space
+    			if(value) velocity.add(new Vector3f(0, speed, 0));
+    			break;
+    		case 5:
+    			//left shift
+    			if(value) velocity.add(new Vector3f(0, -speed, 0));
+    			break;
+    		default:
+    			break;
+    		}
+    		window.getCamera().addVelocity(velocity);
+    	}
     }
 
     //here we render the meshes that are in the world
@@ -86,6 +131,10 @@ public class Loop {
     	float aspectRatio = (float) window.getWidth() / window.getHeight();
     	Matrix4f projectionMatrix = Util.getProjectionMatrix(aspectRatio, window.FOV);
     	renderer.sendMat4("projectionMatrix", projectionMatrix);
+    	
+    	//send view matrix
+    	Matrix4f viewMatrix = window.getCamera().getViewMatrix();
+    	renderer.sendMat4("viewMatrix", viewMatrix);
     	
         renderer.clearColor();
         for(int i = 0; i< world.getMeshCount(); i++) {

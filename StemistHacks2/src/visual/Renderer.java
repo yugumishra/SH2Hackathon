@@ -100,6 +100,7 @@ public class Renderer {
         
         //create uniforms
         addUniform("projectionMatrix");
+        addUniform("viewMatrix");
     }
 
     public void clearColor() {

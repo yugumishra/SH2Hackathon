@@ -19,6 +19,12 @@ public class Window {
     
     //vsync variable
     private boolean vSync;
+    
+    //boolean array containing whether or not each key is pressed or not
+    boolean[] keys;
+    
+    //Camera instance
+    private Camera cam;
 
     //constructor
     public Window(String title, int width, int height, boolean vSync) {
@@ -27,6 +33,8 @@ public class Window {
         this.width = width;
         this.height = height;
         this.vSync = vSync;
+        cam = new Camera();
+        keys = new boolean[6];
     }
 
     //init method
@@ -67,10 +75,33 @@ public class Window {
         }
 
         //create key callback to determine when keys are pressed
-        //for now a very basic key callback to close the window when escape is pressed
+        //key callback now edits the keys array depending on the action
         GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if(key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
                 GLFW.glfwSetWindowShouldClose(window, true);
+            }
+            boolean value = true;
+            if(action == GLFW.GLFW_RELEASE) {
+            	value = false;
+            }
+            
+            if(key == GLFW.GLFW_KEY_W) {
+            	keys[0] = value;
+            }
+            if(key == GLFW.GLFW_KEY_A) {
+            	keys[1] = value;
+            }
+            if(key == GLFW.GLFW_KEY_S) {
+            	keys[2] = value;
+            }
+            if(key == GLFW.GLFW_KEY_D) {
+            	keys[3] = value;
+            }
+            if(key == GLFW.GLFW_KEY_SPACE) {
+            	keys[4] = value;
+            }
+            if(key == GLFW.GLFW_KEY_LEFT_SHIFT) {
+            	keys[5] = value;
             }
         });
         
@@ -121,5 +152,13 @@ public class Window {
 
     public int getHeight() {
         return height;
+    }
+    
+    public boolean[] getKeys() {
+    	return keys;
+    }
+    
+    public Camera getCamera() {
+    	return cam;
     }
 }
