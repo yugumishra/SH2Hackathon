@@ -3,26 +3,26 @@ package visual;
 import java.util.ArrayList;
 
 public class World {
-    private ArrayList<Mesh> meshes;
+    private ArrayList<Drawable> Drawablees;
     public World() {
-        meshes = new ArrayList<Mesh>();
+        Drawablees = new ArrayList<Drawable>();
     }
 
-    public void addMesh(Mesh m) {
-        meshes.add(m);
+    public void addDrawable(Drawable m) {
+        Drawablees.add(m);
     }
     
     public void init() {
-    	for(Mesh m: meshes) {
-    		m.loadMesh();
+    	for(Drawable m: Drawablees) {
+    		m.init();
     	}
     }
 
-    public Mesh getMesh(int i) {
-        return meshes.get(i);
+    public Drawable getDrawable(int i) {
+        return Drawablees.get(i);
     }
 
-    public int getMeshCount() {
-        return meshes.size();
+    public int getDrawableCount() {
+        return Drawablees.size();
     }
 }

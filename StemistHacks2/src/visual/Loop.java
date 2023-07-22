@@ -84,6 +84,9 @@ public class Loop {
 
     public void update() {
         window.getCamera().update();
+        for(int i = 0; i< world.getDrawableCount(); i++) {
+        	world.getDrawable(i).increment();
+        }
     }
     //process inputs
     public void input() {
@@ -100,39 +103,34 @@ public class Loop {
 		float cos = (float) Math.cos(angle);
     	for(int i = 0; i< keys.length; i++) {
     		boolean value = keys[i];
-    		if(value == false) continue;
+    		if(!value) continue;
     		handleInput(speed, sin, cos, i);
     	}
     	
     }
     
-    public void handleInput(float speed, float sin, float cos, int i) {
-    	Vector3f velocity = new Vector3f(0,0,0);
-    	if(i == 0) {
-    		//w
-    		velocity = new Vector3f(-speed * sin, 0, -speed * cos);
-    	}
-    	if(i == 1) {
-    		//s
-    		velocity = new Vector3f(speed * sin, 0, speed * cos);
-    	}
-    	if(i == 2) {
-    		//a
-    		velocity = new Vector3f(-speed * cos, 0, speed * sin);
-    	}
-    	if(i == 3) {
-    		//d
-    		velocity = new Vector3f(speed * cos, 0, - speed * sin);
-    	}
-    	if(i == 4) {
-    		velocity = new Vector3f(0, speed, 0);
-    	}
-    	if(i == 5) {
-    		velocity = new Vector3f(0, -speed, 0);
-    	}
-    	window.getCamera().addVelocity(velocity);
-    	
-    }
+    private void handleInput(float speed, float sin, float cos, int i) {
+		Vector3f velocity = new Vector3f(0,0,0);
+		if(i == 0) { 
+			velocity = new Vector3f(0, 0, -speed);
+		}
+		if(i == 1) {
+			velocity = new Vector3f(-speed, 0, 0);
+		}
+		if(i == 2) {
+			velocity = new Vector3f(0, 0, speed);
+		}
+		if(i == 3) {
+			velocity = new Vector3f(speed, 0, 0);
+		}
+		if(i == 4) {
+			velocity = new Vector3f(0, speed, 0);
+		}
+		if(i == 5) {
+			velocity = new Vector3f(0, -speed, 0);
+		}
+		window.getCamera().addVelocity(velocity);
+	}
 
     //here we render the meshes that are in the world
     public void render() {
@@ -148,20 +146,16 @@ public class Loop {
     	
         renderer.clearColor();
         
-        for(int i = 0; i< world.getMeshCount(); i++) {
-            Mesh m = world.getMesh(i);
+        for(int i = 0; i< world.getDrawableCount(); i++) {
+            Drawable m = world.getDrawable(i);
             renderer.render(m);
-            
-            if(m.getName().equals("Suzanne")) {
-            	m.addRot(new Vector3f(0.01f,0.01f,0));
-            }
         }
     }
 
     public void cleanup() {
         window.cleanup();
-        for(int i = 0; i< world.getMeshCount(); i++) {
-        	Mesh m = world.getMesh(i);
+        for(int i = 0; i< world.getDrawableCount(); i++) {
+        	Drawable m = world.getDrawable(i);
         	m.cleanup();
         }
     }

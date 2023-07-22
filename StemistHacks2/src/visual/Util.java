@@ -63,33 +63,44 @@ public class Util {
 		ArrayList<Float> textureCoords = new ArrayList<Float>();
 		ArrayList<Vertex> uniqueVertices = new ArrayList<Vertex>();
 		ArrayList<Integer> indexes = new ArrayList<Integer>();
-		while (scan.hasNext()) {
-			lineheader = scan.next();
-			if (lineheader.compareTo("v") == 0) {
+		while (scan.hasNextLine()) {
+			String line = scan.nextLine();
+			if(line.contains("usemtl")) {
+				String[] parts = line.split(" ");
+				if(parts[1].equals("Material")) {
+					matID = 0.0f;
+					continue;
+				}else {
+					parts[1] = parts[1].substring(parts[1].length() -3);
+					matID = Float.valueOf(parts[1]);
+					continue;
+				}
+				
+			}
+			String[] components = line.split(" ");
+			if (components[0].compareTo("v") == 0) {
 				// positions
-				positions.add(scan.nextFloat());
-				positions.add(scan.nextFloat());
-				positions.add(scan.nextFloat());
+				positions.add(Float.valueOf(components[1]));
+				positions.add(Float.valueOf(components[2]));
+				positions.add(Float.valueOf(components[3]));
 				continue;
 			}
-			if (lineheader.compareTo("vn") == 0) {
+			if (components[0].compareTo("vn") == 0) {
 				// normals
-				normals.add(scan.nextFloat());
-				normals.add(scan.nextFloat());
-				normals.add(scan.nextFloat());
+				normals.add(Float.valueOf(components[1]));
+				normals.add(Float.valueOf(components[2]));
+				normals.add(Float.valueOf(components[3]));
 				continue;
 			}
-			if (lineheader.compareTo("vt") == 0) {
+			if (components[0].compareTo("vt") == 0) {
 				// texture coords
-				textureCoords.add(scan.nextFloat());
-				textureCoords.add(scan.nextFloat());
-				textureCoords.add(matID);
+				textureCoords.add(Float.valueOf(components[1]));
+				textureCoords.add(Float.valueOf(components[2]));
 				continue;
 			}
-			if (lineheader.compareTo("f") == 0) {
+			if (components[0].compareTo("f") == 0) {
 				// faces section
-				String line = scan.nextLine();
-				String[] parts = line.substring(1).split(" ");
+				String[] parts = line.substring(2).split(" ");
 				for (String vertex : parts) {
 					String[] inds = vertex.split("/");
 					int pind = Integer.valueOf(inds[0]);
@@ -101,12 +112,12 @@ public class Util {
 					
 					pind *= 3;
 					nind *= 3;
-					tind *= 3;
+					tind *= 2;
 					
 					Vertex v = new Vertex(positions.get(pind), positions.get(pind+ 1),
 							positions.get(pind+ 2), normals.get(nind), normals.get(nind + 1),
 							normals.get(nind + 2), textureCoords.get(tind), textureCoords.get(tind + 1),
-							textureCoords.get(tind + 2));
+							matID);
 					int index = uniqueVertices.indexOf(v);
 					if(index == -1) {
 						//not contained need to add
@@ -117,10 +128,7 @@ public class Util {
 					}
 					continue;
 				}
-				if(lineheader.compareTo("usemtl") == 0) {
-					//we have moved onto a new material
-					matID++;
-				}
+				
 			}
 			
 		}
@@ -185,5 +193,15 @@ public class Util {
 			pathss[i] = paths.get(i);
 		}
 		return pathss;
+	}
+	
+	public static AnimatedMesh getAnimation(String name, String filename, int animationSize) {
+		AnimatedMesh am = new AnimatedMesh(name);
+		for(int i = 1; i<= animationSize; i++) { 
+			String path = filename.substring(0, filename.length()-4) + String.valueOf(i) + ".obj";
+			Mesh mesh = readObjFile(path);
+			am.addMesh(mesh);
+		}
+		return am;
 	}
 }

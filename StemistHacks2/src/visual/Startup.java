@@ -26,9 +26,13 @@ public class Startup {
         
         Mesh suzanne = Util.readObjFile("Assets\\models\\untitled.obj");
         suzanne.setPos(new Vector3f(0, 1, 0));
-        world.addMesh(suzanne);
+        world.addDrawable(suzanne);
         Mesh floor = Util.readObjFile("Assets\\models\\floor.obj");
-        world.addMesh(floor);
+        world.addDrawable(floor);
+        AnimatedMesh crossbow = Util.getAnimation("Crossbow", "Assets\\models\\Crossbow.obj", 41);
+        crossbow.start();
+        crossbow.setPos(new Vector3f(0, 5, 0));
+        world.addDrawable(crossbow);
 
         //create Renderer instance
         renderer = new Renderer();

@@ -46,9 +46,6 @@ public class Camera {
 		Vector3f change = new Vector3f(dy * scale * mouseSensitivity, dx * scale * mouseSensitivity, 0.0f);
 
 		rotation.add(change);
-		rotation.x %= Math.PI * 2;
-		rotation.y %= Math.PI * 2;
-		rotation.z %= Math.PI * 2;
 	}
 	
 	public Matrix4f getViewMatrix() {

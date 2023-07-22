@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL42;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 
-public class Mesh {
+public class Mesh implements Drawable{
     //the data of the mesh the vertices
     private float[] vertices;
     private int[] indices;
@@ -53,7 +53,7 @@ public class Mesh {
     }
 
     //method that will load the mesh into gpu memory
-    public void loadMesh() {
+    public void init() {
     	loadTextures();
         //create a float buffer to hold the vertices
         FloatBuffer fb = MemoryUtil.memAllocFloat(vertices.length);
@@ -237,12 +237,21 @@ public class Mesh {
     	.rotate(rotation.z, new Vector3f(0,0,1));
     	return modelMat;
     }
-    
-    public void addRot(Vector3f change) {
-    	rotation.add(change);
-    }
-    
     public void setPos(Vector3f n) {
     	position = n;
     }
+    
+    public String[] getPaths() {
+    	return filepaths;
+    }
+    
+    public void increment() {
+    	
+    }
+
+	@Override
+	public void addRot(Vector3f rot) {
+		// TODO Auto-generated method stub
+		rotation.add(rot);
+	}
 }

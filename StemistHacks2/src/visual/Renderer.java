@@ -131,10 +131,10 @@ public class Renderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Mesh m) {
+    public void render(Drawable m) {
         if(m.isLoaded() == false) {
             //object not loaded yet
-            m.loadMesh();
+            m.init();
         }
         
         //load model matrix
