@@ -6,6 +6,8 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
@@ -34,6 +36,10 @@ public class Mesh {
 
     //boolean to indicate whether loaded
     public boolean loaded;
+    
+    //position and rotation of the mesh in world space
+    private Vector3f position;
+    private Vector3f rotation;
 
     //constructor
     public Mesh(String name, float[] vertices, int[] indices, String[] paths) {
@@ -42,6 +48,8 @@ public class Mesh {
         this.indices = indices;
         loaded = false;
         this.filepaths = paths;
+        position = new Vector3f(0,0,0);
+        rotation = new Vector3f(0,0,0);
     }
 
     //method that will load the mesh into gpu memory
@@ -219,5 +227,22 @@ public class Mesh {
         GL20.glDeleteBuffers(vbo);
         
         GL30.glBindVertexArray(0);
+    }
+    
+    public Matrix4f getModelMat() {
+    	Matrix4f modelMat = new Matrix4f();
+    	modelMat.translate(position)
+    	.rotate(rotation.x, new Vector3f(1,0,0))
+    	.rotate(rotation.y, new Vector3f(0,1,0))
+    	.rotate(rotation.z, new Vector3f(0,0,1));
+    	return modelMat;
+    }
+    
+    public void addRot(Vector3f change) {
+    	rotation.add(change);
+    }
+    
+    public void setPos(Vector3f n) {
+    	position = n;
     }
 }

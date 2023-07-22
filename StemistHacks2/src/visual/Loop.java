@@ -39,6 +39,8 @@ public class Loop {
 
     public void start() {
         init();
+      //send light position
+    	renderer.send3f("lightPos", new Vector3f(0, 400, 0));
         //run forever until the window should close
         while(isRunning) {
             //increment frames
@@ -89,7 +91,7 @@ public class Loop {
     	boolean[] keys = window.getKeys();
     	//iterate through values
     	
-    	Vector3f velocity = new Vector3f(0,0,0);
+
 		//division by fps necessary for proper riemann sum
 		float speed = 1.0f /fps;
 		//angle from y axis to determine which direction the camera is moving in
@@ -98,38 +100,38 @@ public class Loop {
 		float cos = (float) Math.cos(angle);
     	for(int i = 0; i< keys.length; i++) {
     		boolean value = keys[i];
-    		//switch
-    		
-    		switch(i) {
-    		case 0:
-    			//w
-    			if(value) velocity.add(new Vector3f(-speed * sin, 0, -speed * cos));
-    			break;
-    		case 1:
-    			//a
-    			if(value) velocity.add(new Vector3f(-speed * cos, 0, speed * sin));
-    			break;
-    		case 2:
-    			//s
-    			if(value) velocity.add(new Vector3f(speed * sin, 0, speed * cos));
-    			break;
-    		case 3:
-    			//d
-    			if(value)  velocity.add(new Vector3f(speed * cos, 0, -speed * sin));
-    			break;
-    		case 4:
-    			//space
-    			if(value) velocity.add(new Vector3f(0, speed, 0));
-    			break;
-    		case 5:
-    			//left shift
-    			if(value) velocity.add(new Vector3f(0, -speed, 0));
-    			break;
-    		default:
-    			break;
-    		}	
+    		if(value == false) continue;
+    		handleInput(speed, sin, cos, i);
+    	}
+    	
+    }
+    
+    public void handleInput(float speed, float sin, float cos, int i) {
+    	Vector3f velocity = new Vector3f(0,0,0);
+    	if(i == 0) {
+    		//w
+    		velocity = new Vector3f(-speed * sin, 0, -speed * cos);
+    	}
+    	if(i == 1) {
+    		//s
+    		velocity = new Vector3f(speed * sin, 0, speed * cos);
+    	}
+    	if(i == 2) {
+    		//a
+    		velocity = new Vector3f(-speed * cos, 0, speed * sin);
+    	}
+    	if(i == 3) {
+    		//d
+    		velocity = new Vector3f(speed * cos, 0, - speed * sin);
+    	}
+    	if(i == 4) {
+    		velocity = new Vector3f(0, speed, 0);
+    	}
+    	if(i == 5) {
+    		velocity = new Vector3f(0, -speed, 0);
     	}
     	window.getCamera().addVelocity(velocity);
+    	
     }
 
     //here we render the meshes that are in the world
@@ -143,10 +145,16 @@ public class Loop {
     	Matrix4f viewMatrix = window.getCamera().getViewMatrix();
     	renderer.sendMat4("viewMatrix", viewMatrix);
     	
+    	
         renderer.clearColor();
+        
         for(int i = 0; i< world.getMeshCount(); i++) {
             Mesh m = world.getMesh(i);
             renderer.render(m);
+            
+            if(m.getName().equals("Suzanne")) {
+            	m.addRot(new Vector3f(0.01f,0.01f,0));
+            }
         }
     }
 

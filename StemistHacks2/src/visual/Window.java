@@ -95,10 +95,10 @@ public class Window {
             if(key == GLFW.GLFW_KEY_W) {
             	keys[0] = value;
             }
-            if(key == GLFW.GLFW_KEY_A) {
+            if(key == GLFW.GLFW_KEY_S) {
             	keys[1] = value;
             }
-            if(key == GLFW.GLFW_KEY_S) {
+            if(key == GLFW.GLFW_KEY_A) {
             	keys[2] = value;
             }
             if(key == GLFW.GLFW_KEY_D) {

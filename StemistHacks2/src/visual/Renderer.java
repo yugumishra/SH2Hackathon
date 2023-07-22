@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -47,11 +48,19 @@ public class Renderer {
     	}
     }
     
+    public void send3f(String u, Vector3f val) {
+    	try {
+    		GL20.glUniform3f(program, val.x, val.y, val.z);
+    	}catch(Exception e) {
+    		System.err.println("We couldn't send the light position");
+    	}
+    }
+    
     //intializes the shaders & shader program
     public void init() {
         //get the shaders as strings
-        String vertexShader = Util.scanShader("vertex.vs");
-        String fragmentShader = Util.scanShader("fragment.fs");
+        String vertexShader = Util.scanShader("Assets\\shaders\\vertex.vs");
+        String fragmentShader = Util.scanShader("Assets\\shaders\\fragment.fs");
 
         //generate vertex shader
         int vid = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
@@ -96,6 +105,8 @@ public class Renderer {
             //program didn't link
             System.err.println("Program failed to link");
             System.err.println(GL20.glGetProgramInfoLog(program, 1000));
+            System.err.println(GL20.glGetShaderInfoLog(fid, 1000));
+            System.err.println(GL20.glGetShaderInfoLog(vid, 1000));
             GL20.glDeleteShader(vid);
             GL20.glDeleteShader(fid);
             GL20.glDeleteProgram(program);
@@ -111,6 +122,8 @@ public class Renderer {
         addUniform("projectionMatrix");
         addUniform("viewMatrix");
         addUniform("texture");
+        addUniform("lightPos");
+        addUniform("modelMatrix");
     }
 
     public void clearColor() {
@@ -123,6 +136,10 @@ public class Renderer {
             //object not loaded yet
             m.loadMesh();
         }
+        
+        //load model matrix
+        Matrix4f mat = m.getModelMat();
+        sendMat4("modelMatrix", mat);
         
         //bind the mesh's vertex array object (vao is kind of a pointer to the mesh's vbo) so opengl knows what we're trying to draw
         GL30.glBindVertexArray(m.getVao());
@@ -154,7 +171,7 @@ public class Renderer {
       //error check
       		int error = GL11.glGetError();
       		if (error != GL11.GL_NO_ERROR) {
-      		    System.out.println("OpenGL Error: " + error);
+      		    System.out.println("OpenGL Error Render check: " + error);
       		}
     }
     

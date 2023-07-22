@@ -1,7 +1,9 @@
 package visual;
 
-import java.awt.Toolkit;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import org.joml.Vector3f;
 
 public class Startup {
     private static Window window;
@@ -22,7 +24,11 @@ public class Startup {
         //create world and add meshes for testing
         world = new World();
         
-        world.addMesh(Util.readObjFile("untitled.obj"));
+        Mesh suzanne = Util.readObjFile("Assets\\models\\untitled.obj");
+        suzanne.setPos(new Vector3f(0, 1, 0));
+        world.addMesh(suzanne);
+        Mesh floor = Util.readObjFile("Assets\\models\\floor.obj");
+        world.addMesh(floor);
 
         //create Renderer instance
         renderer = new Renderer();

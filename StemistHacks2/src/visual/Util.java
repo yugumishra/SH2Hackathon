@@ -136,6 +136,7 @@ public class Util {
 			vertices[i*9 + 4] = v.getNorY();
 			vertices[i*9 + 5] = v.getNorZ();
 			
+			
 			vertices[i*9 + 6] = v.getTexX();
 			vertices[i*9 + 7] = v.getTexY();
 			vertices[i*9 + 8] = v.getTexZ();
@@ -151,7 +152,7 @@ public class Util {
 	
 	public static String[] getTextures(String mtlName) {
 		// open scanner
-		File f = new File(mtlName);
+		File f = new File("Assets\\models\\" + mtlName);
 		Scanner scan = null;
 		try {
 			scan = new Scanner(f);
@@ -166,7 +167,7 @@ public class Util {
 		response = scan.next();
 		if(response.compareTo("'None'") == 0) {
 			//.obj has no mtl file and therefore no textures
-			String[] path = {"test_texture.png"};
+			String[] path = {"Assets\\textures\\test_texture.png"};
 			return path;
 		}
 		//flush the newline character
