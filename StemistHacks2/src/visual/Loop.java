@@ -1,5 +1,7 @@
 package visual;
 
+import org.joml.Matrix4f;
+
 public class Loop {
     private Window window;
     private World world;
@@ -39,7 +41,6 @@ public class Loop {
             if(frame % 10 == 0) {
                 //calculate fps again
                 calculateFPS();
-                System.out.println(fps);
                 frame = 0;
             }
 
@@ -81,6 +82,11 @@ public class Loop {
 
     //here we render the meshes that are in the world
     public void render() {
+    	//send projection matrix
+    	float aspectRatio = (float) window.getWidth() / window.getHeight();
+    	Matrix4f projectionMatrix = Util.getProjectionMatrix(aspectRatio, window.FOV);
+    	renderer.sendMat4("projectionMatrix", projectionMatrix);
+    	
         renderer.clearColor();
         for(int i = 0; i< world.getMeshCount(); i++) {
             Mesh m = world.getMesh(i);

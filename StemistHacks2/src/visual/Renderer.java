@@ -1,13 +1,42 @@
 package visual;
 
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.system.MemoryUtil;
 
 public class Renderer {
 
     private int program;
+    
+    private HashMap<String, Integer> uniforms;
+    
+    public Renderer() {
+    	uniforms = new HashMap<String, Integer>();
+    }
+    
+    public void addUniform(String u) {
+    	int location = GL20.glGetUniformLocation(program, u);
+    	if(location < 0) {
+    		System.err.println(u + " uniform not found");
+    		return;
+    	}
+    	uniforms.put(u, location);
+    }
+    
+    public void sendMat4(String u, Matrix4f val) {
+    	try {
+    		FloatBuffer fb = MemoryUtil.memAllocFloat(16);
+    		val.get(fb);
+    		GL20.glUniformMatrix4fv(uniforms.get(u), false, fb);
+    	}catch(Exception e) {
+    		System.err.println("We couldn't send the matrix");
+    	}
+    }
     
     //intializes the shaders & shader program
     public void init() {
@@ -68,6 +97,9 @@ public class Renderer {
         GL20.glDeleteShader(vid);
         GL20.glDeleteShader(fid);
         GL20.glUseProgram(program);
+        
+        //create uniforms
+        addUniform("projectionMatrix");
     }
 
     public void clearColor() {

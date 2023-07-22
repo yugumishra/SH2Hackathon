@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryUtil;
 
 public class Window {
     //fov constant
-    public static final float FOV = (float) Math.toRadians(60);
+    public final float FOV = (float) Math.toRadians(60);
 
     //variables for window
     public int width;
