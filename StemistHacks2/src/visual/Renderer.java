@@ -119,11 +119,14 @@ public class Renderer {
         //enable the formatting (index is which format you're enabling)
         //so 0 means we're enabling the positions
         GL20.glEnableVertexAttribArray(0);
+        
+        GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, m.getIbo());
 
         //draw it
-        GL20.glDrawArrays(GL11.GL_TRIANGLES, 0, m.getVertexCount());
+        GL20.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 
         //unbind and disable
+        GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
         

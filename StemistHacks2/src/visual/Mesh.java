@@ -1,6 +1,7 @@
 package visual;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -11,12 +12,14 @@ import org.lwjgl.system.MemoryUtil;
 public class Mesh {
     //the data of the mesh the vertices
     private float[] vertices;
+    private int[] indices;
     //name
     private String name;
 
     //variables for the vertex buffer object and the vertex array object
     private int vao;
     private int vbo;
+    private int ibo;
     //num vertices
     private int vertexCount;
 
@@ -24,9 +27,10 @@ public class Mesh {
     public boolean loaded;
 
     //constructor
-    public Mesh(String name, float[] vertices) {
+    public Mesh(String name, float[] vertices, int[] indices) {
         this.vertices = vertices;
         this.name = name;
+        this.indices = indices;
         loaded = false;
     }
 
@@ -35,6 +39,10 @@ public class Mesh {
         //create a float buffer to hold the vertices
         FloatBuffer fb = MemoryUtil.memAllocFloat(vertices.length);
         fb.put(vertices).flip();
+        
+        //create a int buffer to hold the indices
+        IntBuffer ib = MemoryUtil.memAllocInt(indices.length);
+        ib.put(indices).flip();
 
         vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
@@ -42,6 +50,10 @@ public class Mesh {
         vbo = GL20.glGenBuffers();
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo);
         GL20.glBufferData(GL15.GL_ARRAY_BUFFER, fb, GL20.GL_STATIC_DRAW);
+        
+        ibo = GL20.glGenBuffers();
+        GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, ibo);
+        GL20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, ib, GL20.GL_STATIC_DRAW);
 
         //specifing the format of the data in the gpu
         //position - index 0, 2 numbers, float, not normalized, vertex size 2 floats, internal offset 0
@@ -54,9 +66,10 @@ public class Mesh {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         
         MemoryUtil.memFree(fb);
+        MemoryUtil.memFree(ib);
 
         //set the vertex count (necessary for draw call)
-        vertexCount = vertices.length/3;
+        vertexCount = indices.length;
         loaded = true;
     }
 
@@ -73,6 +86,11 @@ public class Mesh {
     //get the vertex buffer object
     public int getVbo() {
         return vbo;
+    }
+    
+    //get the index buffer object
+    public int getIbo() {
+    	return ibo;
     }
 
     //getter for the mesh vertex count

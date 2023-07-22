@@ -19,7 +19,7 @@ public class Camera {
 		velocity = new Vector3f(0,0,0);
 		rotation = new Vector3f(0,0,0);
 		
-		mouseSensitivity = 0.01f;
+		mouseSensitivity = 0.8f;
 		this.width = width;
 		this.height = height;
 	}
@@ -43,7 +43,7 @@ public class Camera {
 		int dy = y - height/2;
 
 		float scale = (float) Math.toRadians(60)/width;
-		Vector3f change = new Vector3f(dy * scale, dx * scale, 0.0f);
+		Vector3f change = new Vector3f(dy * scale * mouseSensitivity, dx * scale * mouseSensitivity, 0.0f);
 
 		rotation.add(change);
 		rotation.x %= Math.PI * 2;

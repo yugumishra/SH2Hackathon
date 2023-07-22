@@ -22,17 +22,17 @@ public class Startup {
         //create world and add meshes for testing
         world = new World();
         float[] quadVertices = {
-        			    // first triangle
-        			     0.5f,  0.5f, -2.5f,  // top right
-        			     0.5f, -0.5f, -1.5f,  // bottom right
-        			    -0.5f,  0.5f, -1.5f,  // top left 
-        			    // second triangle
-        			     0.5f, -0.5f, -1.5f,  // bottom right
-        			    -0.5f, -0.5f, -1.5f,  // bottom left
-        			    -0.5f,  0.5f, -1.5f   // top left
-        			
+        		-0.5f, 0.5f, -1.5f,
+        		0.5f, 0.5f, -2.5f,
+        		-0.5f, -0.5f, -1.5f,
+        		0.5f, -0.5f, -1.5f
         };
-        Mesh m = new Mesh("Rectangle", quadVertices);
+        
+        int[] indices = {
+        		0,1,3,
+        		0,2,3
+        };
+        Mesh m = new Mesh("Rectangle", quadVertices, indices);
         world.addMesh(m);
 
         //create Renderer instance
