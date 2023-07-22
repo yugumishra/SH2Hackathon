@@ -1,25 +1,34 @@
 package visual;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL42;
+import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 
 public class Mesh {
     //the data of the mesh the vertices
     private float[] vertices;
     private int[] indices;
+    private String[] filepaths;
     //name
     private String name;
 
     //variables for the vertex buffer object and the vertex array object
     private int vao;
     private int vbo;
+    //variables for index buffer object and texture object
     private int ibo;
+    private int texId;
     //num vertices
     private int vertexCount;
 
@@ -27,15 +36,17 @@ public class Mesh {
     public boolean loaded;
 
     //constructor
-    public Mesh(String name, float[] vertices, int[] indices) {
+    public Mesh(String name, float[] vertices, int[] indices, String[] paths) {
         this.vertices = vertices;
         this.name = name;
         this.indices = indices;
         loaded = false;
+        this.filepaths = paths;
     }
 
     //method that will load the mesh into gpu memory
     public void loadMesh() {
+    	loadTextures();
         //create a float buffer to hold the vertices
         FloatBuffer fb = MemoryUtil.memAllocFloat(vertices.length);
         fb.put(vertices).flip();
@@ -44,24 +55,29 @@ public class Mesh {
         IntBuffer ib = MemoryUtil.memAllocInt(indices.length);
         ib.put(indices).flip();
 
+        //generate vertex array object
         vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
-
+        
+        //generate vertex buffer object
         vbo = GL20.glGenBuffers();
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, vbo);
+        //buffer the vertex data
         GL20.glBufferData(GL15.GL_ARRAY_BUFFER, fb, GL20.GL_STATIC_DRAW);
         
+        //generate index buffer object
         ibo = GL20.glGenBuffers();
         GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, ibo);
+        //buffer the index data
         GL20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, ib, GL20.GL_STATIC_DRAW);
 
         //specifing the format of the data in the gpu
         //position - index 0, 3 numbers, float, not normalized, vertex size 8 floats, internal offset 0
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 2),  0);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 3),  0);
         // normals - index 1, 3 numbers, float, not normalized, vertex size 8 floats, internal offset 3 floats
-        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 2), Float.BYTES * (3));
+        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 3), Float.BYTES * (3));
         // texture - index 2, 2 numbers, float, not normalized, vertex size 8 floats, internal offset 6 floats
-        GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 2), Float.BYTES * (3 + 3));
+        GL20.glVertexAttribPointer(2, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 3), Float.BYTES * (3 + 3));
 
         GL30.glBindVertexArray(0);
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
@@ -76,6 +92,87 @@ public class Mesh {
         vertexCount = indices.length;
         loaded = true;
     }
+    
+    public void loadTextures() {
+
+		// gen id
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		texId = GL11.glGenTextures();
+		
+		// bind
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, texId);
+		
+		//read image data
+		List<ByteBuffer> imageBuffers = new ArrayList<ByteBuffer>();
+		int maxW = 0, maxH = 0;
+		// load data
+		STBImage.stbi_set_flip_vertically_on_load(true);
+		for(int i = 0; i< filepaths.length; i++) {
+			int[] width = new int[1];
+			int[] height = new int[1];
+			int[] channels = new int[1];
+			imageBuffers.add(STBImage.stbi_load(filepaths[i], width, height, channels, 4));
+			if(width[0] > maxW) {
+				maxW = width[0];
+			}
+			if(height[0] > maxH) {
+				maxH = height[0];
+			}
+		}
+		
+		ByteBuffer imageBuffer = combine(imageBuffers);
+		// send to gpu
+		int numMipmapLevels = (int) (Math.floor(Math.log(Math.max(maxW, maxH)) / Math.log(2)) + 1);
+		GL42.glTexStorage3D(GL42.GL_TEXTURE_2D_ARRAY, numMipmapLevels, GL42.GL_RGBA8, maxW, maxH, filepaths.length);
+		
+		// error check
+		int error = GL11.glGetError();
+		if (error != GL11.GL_NO_ERROR) {
+			System.out.println("OpenGL Error check 1: " + error);
+		}
+		
+		GL30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, maxW, maxH, filepaths.length, GL42.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
+		
+		// mipmap time
+		GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
+		
+		// parameters
+		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_S, GL13.GL_REPEAT);
+		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_WRAP_T, GL13.GL_REPEAT);
+		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		
+		// unbind
+		GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
+
+		// free buffer
+		for(int i = 0; i< imageBuffers.size(); i++) {
+			MemoryUtil.memFree(imageBuffers.get(i));
+		}
+		MemoryUtil.memFree(imageBuffer);
+		
+		// error check
+		error = GL11.glGetError();
+		if (error != GL11.GL_NO_ERROR) {
+			System.out.println("OpenGL Error check 2: " + error);
+		}
+    }
+    
+    private ByteBuffer combine(List<ByteBuffer> buffers) {
+		int length = 0;
+		for(ByteBuffer bb: buffers) {
+			bb.rewind();
+			length += bb.remaining();
+		}
+		ByteBuffer buff = MemoryUtil.memAlloc(length);
+		for(ByteBuffer bb: buffers) {
+			bb.rewind();
+			buff.put(bb);
+		}
+		buff.rewind();
+		return buff;
+	}
 
     //get whether this mesh is loaded or not
     public boolean isLoaded() {
@@ -95,6 +192,11 @@ public class Mesh {
     //get the index buffer object
     public int getIbo() {
     	return ibo;
+    }
+    
+    //get the texture object
+    public int getTexID() {
+    	return texId;
     }
 
     //getter for the mesh vertex count

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
@@ -35,6 +36,14 @@ public class Renderer {
     		GL20.glUniformMatrix4fv(uniforms.get(u), false, fb);
     	}catch(Exception e) {
     		System.err.println("We couldn't send the matrix");
+    	}
+    }
+    
+    public void send1i(String u, int val) {
+    	try {
+    		GL20.glUniform1i(uniforms.get(u), val);
+    	}catch(Exception e) {
+    		System.err.println("We couldn't send the texture");
     	}
     }
     
@@ -101,6 +110,7 @@ public class Renderer {
         //create uniforms
         addUniform("projectionMatrix");
         addUniform("viewMatrix");
+        addUniform("texture");
     }
 
     public void clearColor() {
@@ -119,15 +129,26 @@ public class Renderer {
         //enable the formatting (index is which format you're enabling)
         //so 0 means we're enabling the positions
         GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
         
+        //bind ibo
         GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, m.getIbo());
+        
+        //bind texture unit
+        send1i("texture", 0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, m.getTexID());
 
         //draw it
         GL20.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 
         //unbind and disable
         GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
         GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
         
       //error check

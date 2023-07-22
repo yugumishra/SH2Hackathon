@@ -2,9 +2,11 @@
 
 in vec3 posi;
 in vec3 normal;
-in vec2 textureCoords;
+in vec3 textureCoords;
 out vec4 color;
 
+uniform sampler2DArray texture;
+
 void main() {
-    color = vec4(posi.x + 0.17, 0.0, posi.y + 0.25, 1.0);
+    color = texture(texture, textureCoords);
 }

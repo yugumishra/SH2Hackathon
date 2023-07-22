@@ -2,11 +2,11 @@
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 normall;
-layout(location = 2) in vec2 textureCoordss;
+layout(location = 2) in vec3 textureCoordss;
 
 out vec3 posi;
 out vec3 normal;
-out vec2 textureCoords;
+out vec3 textureCoords;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
