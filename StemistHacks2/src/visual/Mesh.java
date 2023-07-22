@@ -56,8 +56,12 @@ public class Mesh {
         GL20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, ib, GL20.GL_STATIC_DRAW);
 
         //specifing the format of the data in the gpu
-        //position - index 0, 2 numbers, float, not normalized, vertex size 2 floats, internal offset 0
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, Float.BYTES * (3),  0);
+        //position - index 0, 3 numbers, float, not normalized, vertex size 8 floats, internal offset 0
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 2),  0);
+        // normals - index 1, 3 numbers, float, not normalized, vertex size 8 floats, internal offset 3 floats
+        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 2), Float.BYTES * (3));
+        // texture - index 2, 2 numbers, float, not normalized, vertex size 8 floats, internal offset 6 floats
+        GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, Float.BYTES * (3 + 3 + 2), Float.BYTES * (3 + 3));
 
         GL30.glBindVertexArray(0);
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);

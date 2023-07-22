@@ -21,19 +21,8 @@ public class Startup {
 
         //create world and add meshes for testing
         world = new World();
-        float[] quadVertices = {
-        		-0.5f, 0.5f, -1.5f,
-        		0.5f, 0.5f, -2.5f,
-        		-0.5f, -0.5f, -1.5f,
-        		0.5f, -0.5f, -1.5f
-        };
         
-        int[] indices = {
-        		0,1,3,
-        		0,2,3
-        };
-        Mesh m = new Mesh("Rectangle", quadVertices, indices);
-        world.addMesh(m);
+        world.addMesh(Util.readObjFile("untitled.obj"));
 
         //create Renderer instance
         renderer = new Renderer();
