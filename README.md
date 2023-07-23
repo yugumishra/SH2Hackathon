@@ -35,7 +35,8 @@ CodeBow is the result of the collective efforts and dedication of our developmen
 Team members:
 Yugank Mishra,
 Ranya Narwal,
-Logan Thibert
+Logan Thibert,
+Victor Facchina
 
 ## Feedback and Support
 We welcome any feedback, bug reports, or suggestions for improvement. Feel free to reach out to us.
