@@ -92,6 +92,8 @@ public class Window {
             	value = false;
             }
             
+            Startup.getPlayer().numberPressed(key);
+            
             if(key == GLFW.GLFW_KEY_W) {
             	keys[0] = value;
             }

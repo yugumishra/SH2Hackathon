@@ -10,12 +10,13 @@ public class Camera {
 	
 	private int width;
 	private int height;
+	private float yAccel = -0.006f;
 	
 	private float mouseSensitivity;
 	
 	//initialize everything to 0 (almost)
 	public Camera(int width, int height) {
-		position = new Vector3f(0,0,0);
+		position = new Vector3f(0,2f,0);
 		velocity = new Vector3f(0,0,0);
 		rotation = new Vector3f(0,0,0);
 		
@@ -29,8 +30,14 @@ public class Camera {
 	}
 	
 	public void update() {
+		float height = 0.0f;
+		height = Startup.getPlatform().lowestHeight();
+		if(position.y < height + 2f) {
+			position.y = height + 2f;
+		}
 		position.add(velocity);
 		velocity.mul(0.9f);
+		velocity.add(0.0f, yAccel, 0.0f);
 	}
 	
 	public void updateDimensions(int w, int h) {
@@ -60,5 +67,9 @@ public class Camera {
 	
 	public Vector3f getRotation() {
 		return rotation;
+	}
+	
+	public Vector3f getPosition() {
+		return position;
 	}
 }

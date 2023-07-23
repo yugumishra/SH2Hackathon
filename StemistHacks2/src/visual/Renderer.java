@@ -158,7 +158,9 @@ public class Renderer {
         GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, m.getTexID());
 
         //draw it
-        GL20.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+       	GL20.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+       
+        
 
         //unbind and disable
         GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);

@@ -83,7 +83,7 @@ public class Loop {
     }
 
     public void update() {
-        window.getCamera().update();
+        Startup.getPlayer().update();
         for(int i = 0; i< world.getDrawableCount(); i++) {
         	world.getDrawable(i).increment();
         }

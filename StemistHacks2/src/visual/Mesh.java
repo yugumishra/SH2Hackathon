@@ -102,7 +102,9 @@ public class Mesh implements Drawable{
     }
     
     public void loadTextures() {
-
+    	if(filepaths == null) {
+    		return;
+    	}
 		// gen id
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		texId = GL11.glGenTextures();
@@ -253,5 +255,9 @@ public class Mesh implements Drawable{
 	public void addRot(Vector3f rot) {
 		// TODO Auto-generated method stub
 		rotation.add(rot);
+	}
+	
+	public Vector3f getPosition() {
+		return position;
 	}
 }
