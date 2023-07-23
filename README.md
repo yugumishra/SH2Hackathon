@@ -27,7 +27,7 @@ The game's physics system is carefully designed to provide realistic projectile 
 
 ## Getting Started
 1. Open the CodeBow project in Eclipse.
-2. Run the game from the main class [MainClass.java].
+2. Run the game from the main class.
 3. Explore the procedurally generated terrains and engage in exciting battles.
 
 ## Credits
