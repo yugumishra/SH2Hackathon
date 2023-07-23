@@ -54,6 +54,9 @@ public class Player {
 	}
 	
 	public void initIntervals() {
+		x = new Interval(null);
+		y = new Interval(null);
+		z = new Interval(null);
 		x.setMax(-Float.MAX_VALUE);
 		x.setMin(Float.MAX_VALUE);
 		y.setMax(-Float.MAX_VALUE);
@@ -62,7 +65,7 @@ public class Player {
 		z.setMin(Float.MAX_VALUE);
 		float[] vertices = projectile.getVertices();
 		
-		for(int i =0; i< vertices.length; i+=9) {
+		for(int i =0; i< vertices.length/9; i++) {
 			float xx = vertices[i*9];
 			float yy = vertices[i*9 + 1];
 			float zz = vertices[i*9 + 2];
@@ -180,6 +183,9 @@ public class Player {
     	Matrix4f crossbowMat = weapon.getModelMat();
     	
     	//get the 3 ranges that define the crossbow's bounding box
+    	boxX = new Interval(null);
+    	boxY = new Interval(null);
+    	boxZ = new Interval(null);
     	if(projectileFree) {
     		Vector4f[] vecs = new Vector4f[8];
     		vecs[0] = new Vector4f(x.min, y.min, z.min, 1.0f);

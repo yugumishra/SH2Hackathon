@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import visual.Startup;
 
@@ -34,6 +34,7 @@ public class Comms extends Thread{
 			PrintWriter write = new PrintWriter(output, true);
 			//declare the writers and readers outside of the infinite loop
 			while(true) {
+				System.out.println("We connected successfully");
 				String packet = reader.readLine();
 				int length = 1;
 				do {
@@ -50,7 +51,7 @@ public class Comms extends Thread{
 				in = "";
 			}
 			
-		} catch (UnknownHostException e) {
+		} catch (ConnectException e) {
 			System.out.println("Became the server");
 			//server not found, we must become the server
 			try (ServerSocket serverSocket = new ServerSocket(Startup.portNum)) {
@@ -63,7 +64,7 @@ public class Comms extends Thread{
 				BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 				//declare the writers and readers outside of the infinite loop
 				while(true) {
-					
+					System.out.println("We connected successfully");
 					int length = 0;
 					do {
 						length = in.length();
