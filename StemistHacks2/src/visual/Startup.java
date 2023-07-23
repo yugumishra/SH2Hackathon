@@ -38,13 +38,11 @@ public class Startup {
         Mesh terrain = t.genTerrain();
         world.addDrawable(terrain);
       
-        Mesh suzanne = Util.readObjFile("Assets\\models\\untitled.obj");
         Mesh arena = Util.readObjFile("Assets\\models\\floor.obj");
         platforms.addPlatform(arena);
         
         arena.setPos(new Vector3f(0, 50, 0));
         world.addDrawable(arena);
-        world.addDrawable(suzanne);
         
 
         //create Renderer instance

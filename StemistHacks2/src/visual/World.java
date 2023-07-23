@@ -12,6 +12,15 @@ public class World {
         Drawablees.add(m);
     }
     
+    public void removeDrawable(Drawable m) {
+    	for(Drawable d: Drawablees) {
+    		if(d.equals(m)) {
+    			Drawablees.remove(m);
+    			return;
+    		}
+    	}
+    }
+    
     public void init() {
     	for(Drawable m: Drawablees) {
     		m.init();

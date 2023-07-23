@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.joml.Matrix4f;
@@ -257,6 +258,10 @@ public class Mesh implements Drawable{
 		rotation.add(rot);
 	}
 	
+	public Vector3f getRotation() {
+		return rotation;
+	}
+	
 	public Vector3f getPosition() {
 		return position;
 	}
@@ -264,4 +269,70 @@ public class Mesh implements Drawable{
 	public void setRot(Vector3f other) {
 		rotation = other;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(filepaths);
+		result = prime * result + ibo;
+		result = prime * result + Arrays.hashCode(indices);
+		result = prime * result + (loaded ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+		result = prime * result + texId;
+		result = prime * result + vao;
+		result = prime * result + vbo;
+		result = prime * result + vertexCount;
+		result = prime * result + Arrays.hashCode(vertices);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mesh other = (Mesh) obj;
+		if (!Arrays.equals(filepaths, other.filepaths))
+			return false;
+		if (ibo != other.ibo)
+			return false;
+		if (!Arrays.equals(indices, other.indices))
+			return false;
+		if (loaded != other.loaded)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (position == null) {
+			if (other.position != null)
+				return false;
+		} else if (!position.equals(other.position))
+			return false;
+		if (rotation == null) {
+			if (other.rotation != null)
+				return false;
+		} else if (!rotation.equals(other.rotation))
+			return false;
+		if (texId != other.texId)
+			return false;
+		if (vao != other.vao)
+			return false;
+		if (vbo != other.vbo)
+			return false;
+		if (vertexCount != other.vertexCount)
+			return false;
+		if (!Arrays.equals(vertices, other.vertices))
+			return false;
+		return true;
+	}
+	
+	
 }

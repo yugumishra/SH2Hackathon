@@ -10,7 +10,7 @@ public class Camera {
 	
 	private int width;
 	private int height;
-	private float yAccel = -0.006f;
+	private float yAccel = -0.01f;
 	
 	private float mouseSensitivity;
 	
@@ -32,8 +32,8 @@ public class Camera {
 	public void update() {
 		float height = 0.0f;
 		height = Startup.getPlatform().lowestHeight();
-		if(position.y < height + 2f) {
-			position.y = height + 2f;
+		if(position.y < height + 2.6f) {
+			position.y = height + 2.6f;
 		}
 		position.add(velocity);
 		velocity.mul(0.9f);
