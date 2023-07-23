@@ -7,11 +7,12 @@ in vec3 LightPos;
 out vec4 color;
 
 uniform sampler2DArray texture;
+uniform int terrainIdentifier;
 
 void main() {
-        vec3 offset = vec3(texture(texture, textureCoords));
-        if(offset.x != 0 && offset.y != 0 && offset.z != 0) {
-             vec3 lightColor = vec3(1.0, 1.0, 1.0);
+        if(terrainIdentifier == 0) {
+             vec3 offset = vec3(texture(texture, textureCoords));
+        vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
         //ambient
         float ambientStrength = 0.1;
@@ -36,5 +37,7 @@ void main() {
         }else {
             color = vec4(textureCoords, 1.0);
         }
+        
+        
        
 }

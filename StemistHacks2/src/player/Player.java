@@ -22,9 +22,11 @@ public class Player {
 		health = 20;
 		attackStart = -1;
 		currentWeapon = Weapon.CROSSBOW;
-		weapon = Util.getAnimation("CrossBow", "Assets\\models\\Crossbow.obj", attackLength);
-		Startup.getWorld().addDrawable(weapon);
 		attackLength = currentWeapon.getAttackLength();
+		weapon = Util.getAnimation("Crossbow", "Assets\\models\\Crossbow.obj", attackLength);
+		weapon.setRotation(camera.getRotation());
+		Startup.getWorld().addDrawable(weapon);
+		
 		frame = 0;
 		
 	}
@@ -43,12 +45,9 @@ public class Player {
 		Vector3f weaponPos = new Vector3f(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 		float angle = camera.getRotation().y;
 		weaponPos.y -= 1;
-		weaponPos.x += (float) (Math.cos(angle));
-		weaponPos.z -= (float) (Math.sin(angle));
+		weaponPos.z -= (float) (2 * Math.cos(angle));
 		weapon.setPos(weaponPos);
-		
-		
-		
+		weapon.setRotation(new Vector3f(camera.getRotation().x *-2, camera.getRotation().y *-2, camera.getRotation().z * -2));
 		
 		frame++;
 	}

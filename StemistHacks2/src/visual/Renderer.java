@@ -124,6 +124,7 @@ public class Renderer {
         addUniform("texture");
         addUniform("lightPos");
         addUniform("modelMatrix");
+        addUniform("terrainIdentifier");
     }
 
     public void clearColor() {
@@ -135,6 +136,13 @@ public class Renderer {
         if(m.isLoaded() == false) {
             //object not loaded yet
             m.init();
+        }
+        
+        if(m.getName().equals("Terrain")) {
+        	//terrain
+        	send1i("terrainIdentifier", 1);
+        }else {
+        	send1i("terrainIdentifier", 0);
         }
         
         //load model matrix

@@ -260,4 +260,8 @@ public class Mesh implements Drawable{
 	public Vector3f getPosition() {
 		return position;
 	}
+	
+	public void setRot(Vector3f other) {
+		rotation = other;
+	}
 }

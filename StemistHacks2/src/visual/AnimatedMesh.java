@@ -90,4 +90,10 @@ public class AnimatedMesh implements Drawable{
 	public String getName() {
 		return name;
 	}
+	
+	public void setRotation(Vector3f other) {
+		for(Mesh m:meshes) {
+			m.setRot(other);
+		}
+	}
 }

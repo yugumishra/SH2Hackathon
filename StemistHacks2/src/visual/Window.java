@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryUtil;
 
 public class Window {
     //fov constant
-    public final float FOV = (float) Math.toRadians(60);
+    public final float FOV = (float) Math.toRadians(90);
 
     //variables for window
     public int width;
@@ -124,6 +124,13 @@ public class Window {
         	cam.processMouseMoved((int) x, (int) y);
         	//set the cursor position back into the middle to prevent too much transformation
         	GLFW.glfwSetCursorPos(window, width/2, height/2);
+        });
+        
+        GLFW.glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+        	if(action == GLFW.GLFW_RELEASE && button == GLFW.GLFW_MOUSE_BUTTON_1) {
+        		//we did an attack
+        		Startup.getPlayer().startAttack();
+        	}
         });
        
 
