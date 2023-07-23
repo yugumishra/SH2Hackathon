@@ -33,8 +33,8 @@ The game's physics system is carefully designed to provide realistic projectile 
 ## Credits
 CodeBow is the result of the collective efforts and dedication of our development team. Special thanks to the creators of OpenGL, LWJGL, and GLFW for their invaluable tools. We also extend our appreciation to the Blender community for their support in 3D model creation.
 Team members:
-Yugank Mishra
-Ranya Narwal
+Yugank Mishra,
+Ranya Narwal,
 Logan Thibert
 
 ## Feedback and Support
