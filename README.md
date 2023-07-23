@@ -5,7 +5,7 @@ Welcome to CodeBow, a captivating game prototype developed for the STEMist 2.0 C
 
 ## Features
 ### 1. Procedural Terrain Generation
-CodeBow utilizes advanced procedural terrain generation algorithms to create vast and diverse landscapes for players to explore. Every time the game is played, the terrain is generated procedurally, ensuring a unique experience in each playthrough. The terrains are realistic and richly detailed, providing an immersive environment for players to interact with.
+CodeBow utilizes advanced procedural terrain generation algorithms like Perlin noise to create vast and diverse landscapes for players to explore. Every time the game is played, the terrain is generated procedurally, ensuring a unique experience in each playthrough. The terrains are realistic and richly detailed, providing an immersive environment for players to interact with.
 
 ### 2. Multi-Texturing for Enhanced Visuals
 To elevate the visual appeal of CodeBow, multi-texturing techniques have been employed. This innovative approach allows the game to apply multiple textures to a single surface, creating a more detailed and realistic appearance. The result is stunning environments with a sense of depth and complexity that draws players deeper into the game world.
