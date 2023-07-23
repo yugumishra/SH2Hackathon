@@ -334,5 +334,7 @@ public class Mesh implements Drawable{
 		return true;
 	}
 	
-	
+	public float[] getVertices() {
+		return vertices;
+	}
 }

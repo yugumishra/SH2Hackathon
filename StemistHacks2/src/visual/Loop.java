@@ -92,42 +92,39 @@ public class Loop {
     public void input() {
     	//get values
     	boolean[] keys = window.getKeys();
+    	boolean inTheAir = window.getCamera().inTheAir();
     	//iterate through values
     	
-
 		//division by fps necessary for proper riemann sum
-		float speed = 1.0f /fps;
+		float speed = 2.0f /fps;
 		//angle from y axis to determine which direction the camera is moving in
-		float angle = window.getCamera().getRotation().y;
+		float angle = -window.getCamera().getRotation().y;
 		float sin = (float) Math.sin(angle);
 		float cos = (float) Math.cos(angle);
     	for(int i = 0; i< keys.length; i++) {
     		boolean value = keys[i];
     		if(!value) continue;
-    		handleInput(speed, sin, cos, i);
+    		handleInput(speed, sin * speed, cos * speed, i, inTheAir);
     	}
     	
     }
     
-    private void handleInput(float speed, float sin, float cos, int i) {
+    private void handleInput(float speed, float sin, float cos, int i, boolean inTheAir) {
 		Vector3f velocity = new Vector3f(0,0,0);
 		if(i == 0) { 
-			velocity = new Vector3f(0, 0, -speed);
+			velocity = new Vector3f(-sin, 0, -cos);
 		}
 		if(i == 1) {
-			velocity = new Vector3f(-speed, 0, 0);
+			velocity = new Vector3f(-cos, 0, sin);
 		}
 		if(i == 2) {
-			velocity = new Vector3f(0, 0, speed);
+			velocity = new Vector3f(sin, 0, cos);
 		}
 		if(i == 3) {
-			velocity = new Vector3f(speed, 0, 0);
+			velocity = new Vector3f(cos, 0, -sin);
 		}
-		if(i == 4) {
+		if(i == 4 && inTheAir == false) {
 			velocity = new Vector3f(0, speed, 0);
-		}
-		if(i == 5) {
-			velocity = new Vector3f(0, -speed, 0);
 		}
 		window.getCamera().addVelocity(velocity);
 	}

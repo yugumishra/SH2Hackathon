@@ -10,12 +10,14 @@ public class Camera {
 	
 	private int width;
 	private int height;
-	private float yAccel = -0.01f;
+	private float yAccel = -0.010f;
+	private boolean inTheAir;
 	
 	private float mouseSensitivity;
 	
 	//initialize everything to 0 (almost)
 	public Camera(int width, int height) {
+		inTheAir = false;
 		position = new Vector3f(0,2f,0);
 		velocity = new Vector3f(0,0,0);
 		rotation = new Vector3f(0,0,0);
@@ -30,10 +32,19 @@ public class Camera {
 	}
 	
 	public void update() {
+		if(position.y <= 0.0f) {
+			//game over
+			
+		}
 		float height = 0.0f;
 		height = Startup.getPlatform().lowestHeight();
-		if(position.y < height + 2.6f) {
+		if(position.y < height + 2.6f && position.x < 20 && position.z < 20 && position.x > -20 && position.z > -20) {
 			position.y = height + 2.6f;
+			inTheAir = false;
+		}
+		if(position.y > height + 4.5f){
+			//he is in the air
+			inTheAir = true;
 		}
 		position.add(velocity);
 		velocity.mul(0.9f);
@@ -71,5 +82,9 @@ public class Camera {
 	
 	public Vector3f getPosition() {
 		return position;
+	}
+	
+	public boolean inTheAir() {
+		return inTheAir;
 	}
 }
