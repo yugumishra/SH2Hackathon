@@ -5,16 +5,33 @@ import java.awt.Toolkit;
 
 import org.joml.Vector3f;
 
+import multiplayer.Comms;
 import player.Player;
 
-public class Startup {
+public class Startup extends Thread{
+	public static int portNum = 5000;
+	
     private static Window window;
     private static World world;
     private static Renderer renderer;
     private static Platform platforms;
     private static Player p;
+    private static Comms comms;
+    
     public static void main(String[] args) {
-        int width = 0;
+        comms = new Comms();
+        comms.start();
+        
+        Startup sup = new Startup();
+        sup.start();
+    }
+    
+    public static Comms getComms() {
+    	return comms;
+    }
+    
+    public void run() {
+    	int width = 0;
         int height = 0;
 
         //use toolkit to get the primary monitor width and height

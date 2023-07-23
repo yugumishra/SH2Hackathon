@@ -72,6 +72,7 @@ public class Util {
 					continue;
 				}else {
 					parts[1] = parts[1].substring(parts[1].length() -3);
+					if(parts[1].contains("0") == false) continue;
 					matID = Float.valueOf(parts[1]);
 					continue;
 				}
@@ -185,8 +186,14 @@ public class Util {
 			response = scan.next();
 			if(response.compareTo("map_Kd") == 0) {
 				//we have a file path incoming
-				paths.add(scan.next());
+				String str = scan.next();
+				
+				str = str.substring(str.indexOf("Assets"));
+				paths.add(str);
 			}
+		}
+		if(paths.size() == 0) {
+			paths.add("Assets\\textures\\peach.png");
 		}
 		String[] pathss = new String[paths.size()];
 		for(int i = 0; i< pathss.length;i++) {

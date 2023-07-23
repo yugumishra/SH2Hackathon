@@ -96,15 +96,19 @@ public class Window {
             
             if(key == GLFW.GLFW_KEY_W) {
             	keys[0] = value;
+            	Startup.getPlayer().incrementRunFrames();
             }
             if(key == GLFW.GLFW_KEY_A) {
             	keys[1] = value;
+            	Startup.getPlayer().incrementRunFrames();
             }
             if(key == GLFW.GLFW_KEY_S) {
             	keys[2] = value;
+            	Startup.getPlayer().incrementRunFrames();
             }
             if(key == GLFW.GLFW_KEY_D) {
             	keys[3] = value;
+            	Startup.getPlayer().incrementRunFrames();
             }
             if(key == GLFW.GLFW_KEY_SPACE) {
             	keys[4] = value;

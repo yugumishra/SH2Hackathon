@@ -18,6 +18,8 @@ import org.lwjgl.opengl.GL42;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 
+import player.Interval;
+
 public class Mesh implements Drawable{
     //the data of the mesh the vertices
     private float[] vertices;
@@ -336,5 +338,13 @@ public class Mesh implements Drawable{
 	
 	public float[] getVertices() {
 		return vertices;
+	}
+	
+	public int getVertexLength() {
+		return vertices.length;
+	}
+	
+	public Vector3f getVertex(int i) {
+		return new Vector3f(vertices[i*9], vertices[i*9 +1], vertices[i*9 + 2]);
 	}
 }

@@ -1,6 +1,8 @@
 package player;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
 import visual.AnimatedMesh;
@@ -21,8 +23,17 @@ public class Player {
 	private boolean projectileFree;
 	private Vector3f projectileVelocity;
 	private float yAccel = -0.016f;
+	private int runFrame;
+	private Interval x;
+	private Interval y;
+	private Interval z;
+	private Interval boxX;
+	private Interval boxY;
+	private Interval boxZ;
 	
 	public Player(Camera cam) {
+		runFrame = 0;
+		
 		this.camera = cam;
 		health = 20;
 		attackStart = -1;
@@ -38,6 +49,43 @@ public class Player {
 		projectileFree = false;
 		frame = 0;
 		projectileVelocity = new Vector3f(0,0,0);
+		
+		initIntervals();
+	}
+	
+	public void initIntervals() {
+		x.setMax(-Float.MAX_VALUE);
+		x.setMin(Float.MAX_VALUE);
+		y.setMax(-Float.MAX_VALUE);
+		y.setMin(Float.MAX_VALUE);
+		z.setMax(-Float.MAX_VALUE);
+		z.setMin(Float.MAX_VALUE);
+		float[] vertices = projectile.getVertices();
+		
+		for(int i =0; i< vertices.length; i+=9) {
+			float xx = vertices[i*9];
+			float yy = vertices[i*9 + 1];
+			float zz = vertices[i*9 + 2];
+			
+			if(xx < x.min) {
+				x.min = xx;
+			}
+			if(xx > x.max) {
+				x.max = xx;
+			}
+			if(yy < y.min) {
+				y.min = yy;
+			}
+			if(yy > y.min) {
+				y.max = yy;
+			}
+			if(zz < z.min) {
+				z.min = zz;
+			}
+			if(zz > z.max) { 
+				z.max = zz;
+			}
+		}
 	}
 	
 	public int getHealth() {
@@ -116,6 +164,77 @@ public class Player {
 			projectile.setPos(new Vector3f(weaponPos.x + change.x, weaponPos.y + change.y, weaponPos.z + change.z));
 		}
 		
+		//send information to other player
+		//data formatting
+		//first 16 floats, player's model matrix (position, rotation)
+		//second 16 floats, current's crossbow's model matrix (position, rotation)
+		//1 number representing which frame of the player animation we are on
+		//24 floats representing the bounding box of the crossbow projectile
+		
+    	Matrix4f playerMat = new Matrix4f();
+    	playerMat.translate(camera.getPosition())
+    	.rotate(camera.getRotation().x, new Vector3f(1,0,0))
+    	.rotate(camera.getRotation().y, new Vector3f(0,1,0))
+    	.rotate(camera.getRotation().z, new Vector3f(0,0,1));
+    	
+    	Matrix4f crossbowMat = weapon.getModelMat();
+    	
+    	//get the 3 ranges that define the crossbow's bounding box
+    	if(projectileFree) {
+    		Vector4f[] vecs = new Vector4f[8];
+    		vecs[0] = new Vector4f(x.min, y.min, z.min, 1.0f);
+    		vecs[1] = new Vector4f(x.min, y.min, z.max, 1.0f);
+    		vecs[2] = new Vector4f(x.min, y.max, z.min, 1.0f);
+    		vecs[3] = new Vector4f(x.min, y.max, z.max, 1.0f);
+    		vecs[4] = new Vector4f(x.max, y.min, z.min, 1.0f);
+    		vecs[5] = new Vector4f(x.max, y.min, z.max, 1.0f);
+    		vecs[6] = new Vector4f(x.max, y.max, z.min, 1.0f);
+    		vecs[7] = new Vector4f(x.max, y.max, z.max, 1.0f);
+    		for(Vector4f v: vecs) {
+    			v.mul(crossbowMat);
+    		}
+    		
+    		boxX.setMax(-Float.MAX_VALUE);
+    		boxX.setMin(Float.MAX_VALUE);
+    		boxY.setMax(-Float.MAX_VALUE);
+    		boxY.setMin(Float.MAX_VALUE);
+    		boxZ.setMax(-Float.MAX_VALUE);
+    		boxZ.setMin(Float.MAX_VALUE);
+    		
+    		for(Vector4f v: vecs) {
+    			float xx = v.x;
+    			float yy = v.y;
+    			float zz = v.z;
+    			
+    			if(xx < boxX.min) {
+    				boxX.min = xx;
+    			}
+    			if(xx > boxX.max) {
+    				boxX.max = xx;
+    			}
+    			if(yy < boxY.min) {
+    				boxY.min = yy;
+    			}
+    			if(yy > boxY.min) {
+    				boxY.max = yy;
+    			}
+    			if(zz < boxZ.min) {
+    				boxZ.min = zz;
+    			}
+    			if(zz > boxZ.max) { 
+    				boxZ.max = zz;
+    			}
+    		}
+    	}else {
+    		boxX.min = 0.0f;
+    		boxX.max = 0.0f;
+    		boxY.max = 0.0f;
+    		boxY.min = 0.0f;
+    		boxZ.min = 0.0f;
+    		boxZ.max = 0.0f;
+    	}
+    	
+		
 		frame++;
 	}
 	
@@ -166,5 +285,12 @@ public class Player {
 			default:
 				break;
 		}
+	}
+	
+	public void incrementRunFrames() {
+		if(runFrame + 1 >= 20) {
+			runFrame = 0;
+		}
+		runFrame++;
 	}
 }
